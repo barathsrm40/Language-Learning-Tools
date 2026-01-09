@@ -17,11 +17,17 @@ async function translatePDF(){
                 texts.push(tc.items.map(it=>it.str).join(" "));
             }
             const fullText=texts.join("\n");
-            const res=await fetch("https://libretranslate.de/translate",{
+            const res=await fetch("https://translate.argosopentech.com/translate",{
                 method:"POST",
-                body:JSON.stringify({q:fullText,source:translateFrom.value,target:translateTo.value,format:"text"}),
+                body:JSON.stringify({
+                    q:fullText,
+                    source:translateFrom.value,
+                    target:translateTo.value,
+                    format:"text"
+                }),
                 headers:{"Content-Type":"application/json"}
             });
+            if(!res.ok) throw new Error("Network error");
             const data=await res.json();
             pdfOutput.value=data.translatedText;
         } catch(e){ alert("PDF Translation failed: "+e.message);}
