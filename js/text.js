@@ -15,12 +15,22 @@ async function translateTextManual(){
     const text=textInput.value;
     if(!text){ alert("Enter text to translate"); return;}
     try{
-        const res=await fetch("https://libretranslate.de/translate",{
+        const res=await fetch("https://translate.argosopentech.com/translate",{
             method:"POST",
-            body:JSON.stringify({q:text,source:translateFrom.value,target:translateTo.value,format:"text"}),
+            body:JSON.stringify({
+                q:text,
+                source:translateFrom.value,
+                target:translateTo.value,
+                format:"text"
+            }),
             headers:{"Content-Type":"application/json"}
         });
+        if(!res.ok) throw new Error("Network error");
         const data=await res.json();
         textTranslated.value=data.translatedText;
-    } catch(e){ textTranslated.value="Translation failed"; }
+    } catch(e){
+        console.log(e);
+        textTranslated.value="Translation failed";
+        alert("Translation failed. Check API or network.");
+    }
 }
